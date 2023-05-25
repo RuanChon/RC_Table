@@ -1,3 +1,14 @@
+// deps
+// import { Box } from "@mantine/core"
+// layout
+import TableLayout from "../../Layout/TableLayout"
+// components
+import TableView from "./components/TableView"
+
 export default function Home() {
-  return <div>this is home</div>
+  return (
+    <TableLayout>
+      <TableView></TableView>
+    </TableLayout>
+  )
 }

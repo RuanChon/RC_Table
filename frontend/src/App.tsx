@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, Suspense } from "react"
 import { useNavigate, Outlet } from "react-router-dom"
 
 // 根路由
@@ -11,9 +11,15 @@ export default function RouteGroup() {
 
     if (!isLogin) {
       navigator("/login")
+    } else {
+      navigator("/home")
     }
-  }, [])
+  }, [navigator])
 
   // outlet 相当于 router-view
-  return <Outlet />
+  return (
+    <Suspense>
+      <Outlet />
+    </Suspense>
+  )
 }

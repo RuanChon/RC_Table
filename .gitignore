@@ -7,3 +7,4 @@ backend/node_modules/*
 public/
 .deploy*/
 _multiconfig.yml
+node_modules
