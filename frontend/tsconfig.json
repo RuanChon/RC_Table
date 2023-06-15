@@ -2,6 +2,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "esModuleInterop": true, // 将所有的cm js的规范的默认导出变成 es 规范
-    "skipLibCheck": true // 跳过第三方插件的类型检查
+    "skipLibCheck": true, // 跳过第三方插件的类型检查
+    "resolveJsonModule": true // 引入 json 配置，在多语言用到
   }
 }
