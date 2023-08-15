@@ -3,5 +3,6 @@
   "theme": "theme",
   "light": "light",
   "dark": "dark",
-  "system": "system"
+  "system": "system",
+  "user": "user"
 }

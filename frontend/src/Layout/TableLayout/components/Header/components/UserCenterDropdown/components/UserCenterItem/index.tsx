@@ -6,7 +6,6 @@ import { map } from "lodash"
 
 // type
 import { UserCenterProps } from "./type"
-import { t } from "i18next"
 import { useCallback } from "react"
 
 // 左边选择栏菜单组件
@@ -51,7 +50,7 @@ export default function UserCenterItem<ValidSelectValue = string>({
     <HoverCard position="left-start" offset={1}>
       <HoverCard.Target>
         <Box className="flex items-center justify-between h-10 px-3 text-sm cursor-pointer">
-          <Text className="text-#1f2329">{t(label)}</Text>
+          <Text>{t(label)}</Text>
           <Box className="flex items-center">
             <Text className="text-xs text-#646A73/90">{selectItemProps.defaultSelect}</Text>
             <IconChevronRight color="#646a73" width={14} height={14} />

@@ -20,8 +20,8 @@ export default function UserCenterDropdown() {
           Chon
         </Avatar>
         <Box className="flex flex-col justify-center">
-          <Text className="text-sm font-bold text-#1f2329">Chon</Text>
-          <Text className="text-xs text-slate-400">飞书个人用户</Text>
+          <Text className="text-sm font-bold">Chon</Text>
+          <Text className="text-xs text-slate-400">{t("user")}</Text>
         </Box>
       </Box>
       {/* 外观 */}
