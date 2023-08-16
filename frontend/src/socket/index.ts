@@ -4,5 +4,5 @@ const url = "http://localhost:1996"
 
 const socket = io(url, {
   // 是否自动链接
-  autoConnect: true,
+  autoConnect: false,
 })
