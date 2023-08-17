@@ -8,7 +8,7 @@ import { Sheet } from "../../../../store/types"
 
 export default function Navbar() {
   const inputRef = useRef<HTMLInputElement>(null)
-  const { sheetsArray, createSheetDispatcher } = useSheets()
+  const { sheetsArray, createSheetDispatcher, navigateToTargetView } = useSheets()
   console.log("sheets", sheetsArray)
 
   const [tempSheetsArr, setTempSheetsArr] = useState<Sheet[]>(sheetsArray)
@@ -30,7 +30,7 @@ export default function Navbar() {
     if (!sheetName) return
     setShowCreateInput(false)
     createSheetDispatcher(sheetName)
-  }, [])
+  }, [createSheetDispatcher])
 
   return (
     <NavContainer width={{ base: 280 }}>
@@ -40,6 +40,7 @@ export default function Navbar() {
           {map(sheetsArray, sheet => {
             return (
               <Box
+                onClick={() => navigateToTargetView(sheet.id)}
                 className="flex items-center justify-between px-1 rounded cursor-pointer h-9 hover:bg-slate-200"
                 key={sheet.id}
               >

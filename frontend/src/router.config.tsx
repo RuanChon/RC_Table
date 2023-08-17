@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom"
 import App from "./App"
 
 // 路由懒加载
-const Home = lazy(() => import("./pages/Home"))
+const Sheet = lazy(() => import("./pages/Sheet"))
 const Login = lazy(() => import("./pages/Login"))
 
 // react-dom
@@ -13,8 +13,8 @@ const routes = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/home",
-        element: <Home />,
+        path: "/sheet/:sheetId/:viewId",
+        element: <Sheet />,
       },
       {
         path: "/login",

@@ -13,8 +13,6 @@ export default function RouteGroup() {
     const isLogin = true
     if (!isLogin) {
       navigator("/login")
-    } else {
-      navigator("/home")
     }
   }, [navigator])
 

@@ -21,15 +21,16 @@ export default function TableLayout(props: PropsWithChildren) {
   }, [])
 
   return (
-    <AppShell header={<Header />} navbar={<Navbar />}>
+    <AppShell
+      header={<Header />}
+      navbar={<Navbar />}
+      styles={theme => ({
+        main: { backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[0] },
+      })}
+    >
       {/* TODO 视频写法 */}
       {/* <Box pl={280} >{props.children}</Box> */}
-      <Box>
-        {props.children}
-        <Button onClick={submitSocket} color="transparent" className="bg-#3370ff">
-          submit
-        </Button>
-      </Box>
+      <Box>{props.children}</Box>
     </AppShell>
   )
 }
