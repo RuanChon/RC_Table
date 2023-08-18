@@ -27,6 +27,36 @@ export default function useSheets() {
     [sheets]
   )
 
+  // 获取目标视图的列
+  const getTargetViewColumns = useCallback(
+    (sheetId: Key, viewId: Key) => {
+      const targetSheet = get(sheets, [sheetId])
+      const targetView = get(targetSheet, ["views", viewId])
+      return {
+        columns: targetSheet.columns,
+        columnsConfig: targetView.columnConfig,
+        sheetId,
+        viewId,
+        columsArray: Object.values(targetSheet.columns),
+        columnsConfigArray: Object.values(targetView.columnConfig),
+      }
+    },
+    [sheets]
+  )
+
+  // 获取目标视图的行
+  const getTargetViewRows = useCallback(
+    (sheetId: Key, viewId: Key) => {
+      const targetSheet = get(sheets, [sheetId])
+      // const targetView = get(targetSheet, ["views", viewId])
+      return {
+        rows: targetSheet.rows,
+        rowsArray: Object.values(targetSheet.rows),
+      }
+    },
+    [sheets]
+  )
+
   // 创建一张表
   const createSheetDispatcher = useCallback(
     (sheetName: string) => {
@@ -64,5 +94,7 @@ export default function useSheets() {
     createSheetDispatcher,
     navigateToTargetView,
     getSheetUrlParams,
+    getTargetViewColumns,
+    getTargetViewRows,
   }
 }

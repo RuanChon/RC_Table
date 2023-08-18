@@ -29,9 +29,20 @@ let initialState: {
       "259fc0b6-ef70-499d-aed7-84f887c7f767": {
         id: "259fc0b6-ef70-499d-aed7-84f887c7f767",
         name: "默认视图",
+        columnConfig: {
+          "dc6719bb-2556-4e1e-ace3-efce9b2362e7": {
+            width: 200,
+            sort: 0,
+          },
+        },
       },
     },
-    rows: {},
+    rows: {
+      "159fc0b6-ef71-499d-aed7-44f887c7f767": {
+        id: "159fc0b6-ef71-499d-aed7-44f887c7f767",
+        "dc6719bb-2556-4e1e-ace3-efce9b2362e7": "hello chon",
+      },
+    },
   },
 }
 

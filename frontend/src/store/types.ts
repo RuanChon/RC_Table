@@ -23,9 +23,16 @@ export interface Row {
   [columnId: Key]: Key
 }
 
+export interface ColumnConfig {
+  width?: number
+  sort: number
+}
 export interface View {
   id: Key
   name: string
+  columnConfig: {
+    [columnId: Key]: ColumnConfig
+  }
 }
 
 // 定义表的类型
