@@ -1,12 +1,12 @@
 import { Box } from "@mantine/core"
-import useSheets from "../../../../hooks/useSheets"
 import { map, omit } from "lodash"
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { Key, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { IconPlus, IconSettings } from "@tabler/icons-react"
-import { Stage, Rect, Layer } from "react-konva"
+import { Stage, Rect, Layer, Text as CanvasText } from "react-konva"
 import { Html } from "react-konva-utils"
 import { KonvaEventObject } from "konva/lib/Node"
 import { ColumnMap } from "../../../../store/types"
+import useSheets from "../../../../hooks/useSheets"
 import TextAtomComponent from "../../../../Layout/TableLayout/components/AtomComponent/TextAtomComponent"
 
 export default function TableView() {
@@ -86,10 +86,16 @@ export default function TableView() {
 
   const [canvasSize, setCanvasSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
 
-  const [workInProgressCell, setWorkInProgressCell] = useState<{ columnType: keyof ColumnMap }>(null)
+  const [workInProgressCell, setWorkInProgressCell] = useState<{
+    columnType: keyof ColumnMap
+    width: number
+    value: Key
+    rowId: Key
+    colId: Key
+  }>(null)
 
   const columnsDescriptiors = getTargetViewColumns(sheetId, viewId)
-  const rowsDescriptiors = getTargetViewRows(sheetId, viewId)
+  const { rowsArray } = getTargetViewRows(sheetId, viewId)
 
   useLayoutEffect(() => {
     setCanvasSize({
@@ -99,20 +105,30 @@ export default function TableView() {
     console.log("canvasSize", canvasSize)
   }, [])
 
-  const handleEditCell = useCallback((event: KonvaEventObject<MouseEvent>, columnType: keyof ColumnMap) => {
-    console.log("event", event)
-    const cellX = event.target.attrs.x
-    const cellY = event.target.attrs.y
+  const handleEditCell = useCallback(
+    (
+      event: KonvaEventObject<MouseEvent>,
+      cellPayload: {
+        columnType: keyof ColumnMap
+        width: number
+        value: Key
+        rowId: Key
+        colId: Key
+      }
+    ) => {
+      console.log("event", event)
+      const cellX = event.target.attrs.x
+      const cellY = event.target.attrs.y
+      // 控制编辑框的位置
+      setWorkInProgressCell(cellPayload)
 
-    // 控制编辑框的位置
-    setWorkInProgressCell({
-      columnType,
-    })
+      fasterOverlayRef.current.style.left = `${cellX}px`
+      fasterOverlayRef.current.style.top = `${cellY}px`
+    },
+    []
+  )
 
-    fasterOverlayRef.current.style.left = `${cellX}px`
-    fasterOverlayRef.current.style.top = `${cellY}px`
-  }, [])
-
+  // 表头宽度
   const columnHeaderWidth = useMemo<number>(() => {
     // 把当前视图的 columnConfig 全拿出来，然后计算出总宽度
     const { columnsConfigArray } = columnsDescriptiors
@@ -122,6 +138,9 @@ export default function TableView() {
     })
     return width
   }, [columnsDescriptiors])
+
+  // 计算列的 x 坐标， 排序
+  // const calculateColnumX = useCallback((colId: Key, columnsConfig: { [columnId: Key]: ColumnConfig }) => {}, [])
 
   return (
     <Box>
@@ -168,29 +187,53 @@ export default function TableView() {
               {/* 用DOM绘制表头行区域，因为数据大了，DOM是控制不住，性能很差，而表头一般都是有限制的 */}
               {/* 注意列宽 = 一列的宽度 * 列个数 */}
               <Html>
-                <Box style={{ width: columnHeaderWidth }} className="h-10 text-sm rounded-md bg-slate-100">
-                  DOM表头
+                <Box
+                  style={{ width: columnHeaderWidth, height: 30 }}
+                  className=" text-white text-sm border-b-0 border border-solid border-#Dee0e3 p-1"
+                >
+                  列头
                 </Box>
               </Html>
-              {/* <Rect
-                onDblClick={event => handleEditCell(event, {
-                  columnType: "TEXT",
-                  width: 180,
-                })}
-                x={20}
-                y={20}
-                width={180}
-                height={30}
-                fill="#fff"
-                strokeWidth={1}
-                stroke="#ddd"
-              /> */}
               {
-                // 渲染rows 01:00:00
-                map(rowsDescriptiors, (row, index) => {
+                // 渲染rows
+                map(rowsArray, (row, index) => {
                   const colomnsIds = Object.keys(omit(row, "id"))
-                  console.log("colomnsIds", colomnsIds)
-                  return
+                  return map(colomnsIds, (colomnId, colomnIndex) => {
+                    // 锁定的就是每一个单元格，考虑以下几个问题
+                    const { columnsConfig, columns } = columnsDescriptiors
+                    // 1. 单元格的大小
+                    const matchWidth = columnsConfig[colomnId].width
+                    const matchType = columns[colomnId].columnType
+                    // 2. 单元格的默认值
+                    const defaultValue = row[colomnId]
+                    // 3. 列的x坐标，以index为例，除了第一列，后面的所有的都是前面列的宽度
+                    // const x = colomnIndex === 0 ? 0 : calculateColnumX(colomnId, columnsConfig)
+                    const x = 0
+                    const y = 0
+
+                    return (
+                      <>
+                        <Rect
+                          x={x}
+                          y={y + 30}
+                          strokeWidth={1}
+                          stroke="#ddd"
+                          width={matchWidth}
+                          height={30}
+                          onDblClick={event =>
+                            handleEditCell(event, {
+                              columnType: matchType,
+                              width: matchWidth,
+                              value: defaultValue,
+                              rowId: row.id,
+                              colId: colomnId,
+                            })
+                          }
+                        />
+                        <CanvasText fontSize={14} x={x + 12} y={y + 30 + 8} text={defaultValue as string} />
+                      </>
+                    )
+                  })
                 })
               }
             </Layer>
@@ -198,7 +241,21 @@ export default function TableView() {
           {/* input */}
           <Box ref={fasterOverlayRef} className="absolute faster-overlay">
             {/* 判断类型渲染组件 */}
-            {workInProgressCell && <Box>{workInProgressCell.columnType === "TEXT" && <TextAtomComponent />}</Box>}
+            {workInProgressCell && (
+              <Box>
+                {workInProgressCell.columnType === "TEXT" && (
+                  <TextAtomComponent
+                    width={workInProgressCell.width}
+                    defaultValue={workInProgressCell.value}
+                    colId={workInProgressCell.colId}
+                    rowId={workInProgressCell.rowId}
+                    sheetId={sheetId}
+                    viewId={viewId}
+                    destroyAtomCpt={() => setWorkInProgressCell(null)}
+                  />
+                )}
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>

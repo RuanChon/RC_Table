@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { Sheet } from "../types"
 import { Key } from "react"
-import { SheetOperator } from "../../operations/SheetOperator"
+// import { SheetOperator } from "../../operations/SheetOperator"
 import { sheetTemplateCreator } from "../utils"
 
 // const defaultSheet = sheetTemplateCreator("未命名子表")
@@ -66,10 +66,23 @@ const sheetsSlice = createSlice({
       state[sheet.id] = sheet
     },
 
+    // 修改表格
+    updateSheet: (
+      state,
+      action: PayloadAction<{ sheetId: Key; viewId: Key; rowId: Key; colId: Key; newValue: string }>
+    ) => {
+      const { sheetId, viewId, rowId, colId, newValue } = action.payload
+
+      console.log("state", state[sheetId])
+      console.log("action", action)
+
+      state[sheetId].rows[rowId][colId] = newValue
+    },
+
     // 删除表格
     deleteSheet: (state, action) => {},
   },
 })
 
-export const { createSheet, deleteSheet } = sheetsSlice.actions
+export const { createSheet, deleteSheet, updateSheet } = sheetsSlice.actions
 export default sheetsSlice.reducer

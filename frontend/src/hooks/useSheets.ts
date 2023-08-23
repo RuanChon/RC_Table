@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux"
-import { createSheet } from "../store/slicers/sheetsSlice"
+import { createSheet, updateSheet } from "../store/slicers/sheetsSlice"
 import { RootState } from "../store"
 import { Key, useCallback, useMemo } from "react"
 import { get } from "lodash"
@@ -85,6 +85,27 @@ export default function useSheets() {
     }
   }, [params.sheetId, params.viewId])
 
+  // 保存input的值到store
+  const saveCellValue = useCallback(
+    (sheetId: Key, viewId: Key, rowId: Key, colId: Key, newValue: string) => {
+      console.log("sheetId", sheetId)
+      console.log("viewId", viewId)
+      console.log("rowId", rowId)
+      console.log("colId", colId)
+
+      dispatch(
+        updateSheet({
+          sheetId,
+          viewId,
+          rowId,
+          colId,
+          newValue,
+        })
+      )
+    },
+    [dispatch]
+  )
+
   return {
     sheets,
     sheetsArray,
@@ -96,5 +117,6 @@ export default function useSheets() {
     getSheetUrlParams,
     getTargetViewColumns,
     getTargetViewRows,
+    saveCellValue,
   }
 }
